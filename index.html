@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Solar - Soluciones en Energía Solar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-foreground: #ffffff;
+            --secondary: #00c8a0;
+            --secondary-foreground: #ffffff;
+            --primary-dark: #0a0a18;
+            --primary-bg: #121230;
+            --card-bg: #1a1a42;
+            --accent-purple: var(--primary);
+            --accent-blue: var(--secondary);
+            --accent-magenta: #fd5af7;
+            --accent-cyan: #5afdf7;
+            --text-color: #e0e0ff;
+            --footer-text: rgba(224, 224, 255, 0.6);
+            --border-color: rgba(37, 99, 235, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --result-bg: rgba(26, 26, 66, 0.6);
+        }
+
+        [data-theme="light"] {
+            --primary-dark: #f0f4ff;
+            --primary-bg: #e6f0ff;
+            --card-bg: #ffffff;
+            --accent-purple: #5b21b6;
+            --accent-blue: #047857;
+            --accent-magenta: #c026d3;
+            --accent-cyan: #0d9488;
+            --text-color: #1a1a42;
+            --footer-text: rgba(26, 26, 66, 0.7);
+            --border-color: rgba(37, 99, 235, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --result-bg: rgba(240, 244, 255, 0.8);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at top, var(--primary-dark), var(--primary-bg));
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+        
+        /* --- Header y Navegación --- */
+        .main-header {
+            background: linear-gradient(145deg, var(--primary-dark), var(--primary-bg));
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 15px var(--accent-cyan);
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .main-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--accent-purple), var(--accent-cyan));
+            transition: width 0.3s ease;
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .menu-toggle { display: none; }
+        
+        /* --- Estilos Generales de Sección --- */
+        .section {
+            padding: 6rem 0;
+            margin-top: 60px; /* Para compensar el header fijo */
+        }
+        
+        .section-title {
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            font-size: 2.5rem;
+            position: relative;
+            text-shadow: 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-purple);
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            border-radius: 3px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 100vh;
+            padding-top: 60px;
+            background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.2), transparent 70%);
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-cyan), var(--accent-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-magenta));
+            color: var(--primary-foreground);
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(253, 90, 247, 0.6);
+        }
+
+        /* --- Estilos de Tarjetas --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(145deg, rgba(37, 99, 235, 0.1), rgba(0, 200, 160, 0.1));
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-blue);
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 200, 160, 0.3);
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 200, 160, 0.2), transparent 60%);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.4s ease-out;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .card:hover::before { opacity: 1; }
+
+        .card h3 {
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .card p, .card ul { font-size: 1rem; }
+        .card ul { list-style-position: inside; padding-left: 10px; }
+        .card li { margin-bottom: 0.5rem; }
+
+        /* --- Sección Cómo Funciona --- */
+        .how-it-works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        .step-card {
+             border-left-color: var(--accent-purple);
+        }
+        .step-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        /* --- Sección FAQ --- */
+        .faq-item details {
+            background: var(--result-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-cyan);
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .faq-item summary {
+            font-weight: 600;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--accent-cyan);
+        }
+        .faq-item p {
+            margin-top: 1rem;
+        }
+
+        /* --- Sección Calculadora CTA --- */
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(145deg, rgba(37, 99, 235, 0.15), rgba(253, 90, 247, 0.15));
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin: 4rem 0;
+        }
+        
+        /* --- Footer --- */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--footer-text);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .footer .creators {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .main-nav { display: none; }
+            .menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--text-color);
+                font-size: 2rem;
+                cursor: pointer;
+            }
+            .main-header .container {
+                flex-wrap: wrap;
+            }
+            .main-nav.active {
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin-top: 1rem;
+            }
+            .main-nav.active ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .hero-content h1 { font-size: 3rem; }
+            .hero-content p { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .section-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="main-header">
+        <div class="container">
+            <a href="#hero" class="logo">
+                <div class="logo-icon">☀️</div>
+                <span class="logo-text">Super Solar</span>
+            </a>
+            <nav class="main-nav" id="main-nav">
+                <ul>
+                    <li><a href="#services">Servicios</a></li>
+                    <li><a href="#why-solar">Beneficios</a></li>
+                    <li><a href="#how-it-works">¿Cómo Funciona?</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#calculator">Calculadora</a></li>
+                </ul>
+            </nav>
+            <div class="header-controls">
+                <div class="theme-toggle" id="theme-toggle">
+                    <span id="theme-icon">🌙</span>
+                </div>
+                <button class="menu-toggle" id="menu-toggle">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="hero">
+            <div class="hero-content">
+                <h1>Transforma tu hogar, ilumina tu futuro.</h1>
+                <p>Aprovecha el poder inagotable del sol. Ofrecemos instalación, consultoría y mantenimiento de sistemas fotovoltaicos para un futuro más brillante, económico y sostenible.</p>
+                <a href="#calculator" class="btn">Calcula tu Ahorro Ahora</a>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <div class="container">
+                <h2 class="section-title">Nuestros Servicios</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Sistemas On-Grid (Conectados a CFE)</h3>
+                        <p>Ideal para reducir tu recibo de luz hasta en un 95%. Incluye instalación, gestoría con CFE y medición bidireccional para que puedas vender tus excedentes de energía.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Sistemas Híbridos (Paneles + Baterías)</h3>
+                        <p>La solución definitiva para tener energía 24/7. Combina paneles solares con baterías de litio de última generación para asegurar tu suministro incluso durante apagones, con monitoreo inteligente desde tu móvil.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Techos Solares Integrales</h3>
+                        <p>Fusionamos arquitectura y sostenibilidad. Diseñamos e instalamos techos solares que no solo generan energía, sino que también ofrecen una solución estética y funcional para tu propiedad.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Consultoría y Asesoría Energética</h3>
+                        <p>Te ayudamos a entender y optimizar tu consumo. Realizamos un diagnóstico completo para diseñar un sistema perfectamente dimensionado a tus necesidades y maximizar tu retorno de inversión.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Mantenimiento y Reparación</h3>
+                        <p>Aseguramos la longevidad y eficiencia de tu sistema. Ofrecemos planes de mantenimiento preventivo y servicios de reparación para que tus paneles operen siempre a su máximo potencial.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Gestión de Trámites y Permisos</h3>
+                        <p>Nos encargamos de todo el papeleo. Gestionamos los permisos necesarios y los trámites ante CFE para que tu única preocupación sea disfrutar de los beneficios de la energía solar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="why-solar" class="section">
+            <div class="container">
+                <h2 class="section-title">¿Por Qué Elegir Energía Solar?</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Ahorro y Economía</h3>
+                        <p>Genera tu propia electricidad y reduce drásticamente tu factura de luz. Aunque requiere una inversión inicial, se compensa rápidamente con los ahorros y los apoyos gubernamentales.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Independencia Energética</h3>
+                        <p>Libérate de la dependencia de las compañías eléctricas y sus tarifas variables. Con un sistema solar, tú tienes el control de tu energía y de tus gastos.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Respeto al Medio Ambiente</h3>
+                        <p>La energía solar es 100% limpia y renovable. No produce emisiones de CO₂ ni contaminantes acústicos, ayudando a reducir tu huella de carbono y a combatir el cambio climático.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Fuente Inagotable</h3>
+                        <p>El sol nos proporcionará energía durante los próximos 5 mil millones de años. Es un recurso natural, gratuito y abundante, especialmente en México, uno de los países con mayor irradiación solar del mundo.</p>
+                    </div>
+                     <div class="card">
+                        <h3>Fácil Instalación y Mantenimiento</h3>
+                        <p>Los paneles pueden instalarse versátilmente en techos, patios o terrenos. Además, su mantenimiento es mínimo, requiriendo solo limpiezas periódicas y una revisión anual.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Aumenta el Valor de tu Propiedad</h3>
+                        <p>Una instalación solar es una inversión inteligente que incrementa la plusvalía de tu inmueble, haciéndolo más atractivo para futuros compradores o inquilinos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="how-it-works" class="section">
+            <div class="container">
+                <h2 class="section-title">¿Cómo Funciona?</h2>
+                <div class="how-it-works-grid">
+                    <div class="card step-card">
+                        <div class="step-number">1</div>
+                        <h3>Captación Solar</h3>
+                        <p>Los paneles solares, compuestos por celdas fotovoltaicas, reciben la radiación del sol durante el día.</p>
+                    </div>
+                    <div class="card step-card">
+                        <div class="step-number">2</div>
+                        <h3>Conversión a Electricidad</h3>
+                        <p>Las celdas convierten la luz solar en electricidad de corriente continua (CC), un flujo de energía en una sola dirección.</p>
+                    </div>
+                    <div class="card step-card">
+                        <div class="step-number">3</div>
+                        <h3>Inversor Solar</h3>
+                        <p>La corriente continua viaja a un inversor, que la transforma en corriente alterna (CA), el tipo de electricidad que usamos en casa.</p>
+                    </div>
+                    <div class="card step-card">
+                        <div class="step-number">4</div>
+                        <h3>Uso y Distribución</h3>
+                        <p>La electricidad se distribuye en tu hogar para alimentar tus aparatos. El excedente se puede almacenar en baterías o enviar a la red de CFE, generando un crédito a tu favor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="calculator" class="section">
+            <div class="container">
+                <div class="cta-section">
+                    <h2 class="section-title" style="margin-bottom: 1.5rem;">Descubre tu Potencial Solar</h2>
+                    <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto 2rem auto;">¿Quieres saber cuántos paneles necesitas y cuánto podrías ahorrar? Utiliza nuestra calculadora fotovoltaica avanzada para obtener un análisis detallado y personalizado en minutos.</p>
+                    <a href="https://davochavez.github.io/CalculadoraFotovoltaicapremium/" target="_blank" class="btn">Ir a la Calculadora Solar</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section">
+            <div class="container">
+                <h2 class="section-title">Preguntas Frecuentes</h2>
+                <div class="faq-item">
+                    <details>
+                        <summary>¿Qué pasa si está nublado?</summary>
+                        <p>Los paneles siguen generando electricidad en días nublados, aunque con menor eficiencia. La radiación difusa aún es aprovechada. Para una cobertura total, los sistemas se pueden complementar con baterías para almacenar energía.</p>
+                    </details>
+                </div>
+                <div class="faq-item">
+                    <details>
+                        <summary>¿Qué mantenimiento requieren?</summary>
+                        <p>El mantenimiento es mínimo. Solo es necesario limpiarlos periódicamente (cada 6-12 meses) para remover polvo o suciedad y realizar una revisión técnica anual del sistema para asegurar su óptimo funcionamiento.</p>
+                    </details>
+                </div>
+                 <div class="faq-item">
+                    <details>
+                        <summary>¿Cuánto duran los paneles solares?</summary>
+                        <p>Tienen una vida útil garantizada de entre 25 y 30 años. Después de este tiempo, no dejan de funcionar, simplemente su eficiencia de generación disminuye ligeramente, pero continúan produciendo energía por muchos años más.</p>
+                    </details>
+                </div>
+                 <div class="faq-item">
+                    <details>
+                        <summary>¿Necesito permisos para instalarlos?</summary>
+                        <p>En la mayoría de las instalaciones domésticas no se requiere un permiso de construcción. Sin embargo, sí es necesario realizar un contrato de interconexión con CFE. Nosotros nos encargamos de toda la gestión para tu comodidad.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; © 2025 Super Solar - Energía Inteligente</p>
+            <p>"Transforma tu hogar, ilumina tu futuro"</p>
+            <div class="creators">
+                <p>Un proyecto de: Bustillos Chávez David, Equihua Morales Juan Pablo, Ortega Vicente David Fernando, Plaza Bustos Ángel Arturo</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- Theme Toggler ---
+            const themeToggle = document.getElementById("theme-toggle");
+            const themeIcon = document.getElementById("theme-icon");
+            const savedTheme = localStorage.getItem("theme") || "dark";
+            
+            document.documentElement.setAttribute("data-theme", savedTheme);
+            themeIcon.textContent = "dark" === savedTheme ? "🌙" : "☀️";
+            
+            themeToggle.addEventListener("click", () => {
+                const currentTheme = document.documentElement.getAttribute("data-theme");
+                const newTheme = "dark" === currentTheme ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", newTheme);
+                themeIcon.textContent = "dark" === newTheme ? "🌙" : "☀️";
+                localStorage.setItem("theme", newTheme);
+            });
+
+            // --- Mobile Menu ---
+            const menuToggle = document.getElementById("menu-toggle");
+            const mainNav = document.getElementById("main-nav");
+            menuToggle.addEventListener("click", () => {
+                mainNav.classList.toggle("active");
+            });
+
+            // --- Interactive Card Effect ---
+            document.querySelectorAll(".card").forEach(card => {
+                card.addEventListener("mousemove", e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty("--x", `${x}px`);
+                    card.style.setProperty("--y", `${y}px`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
